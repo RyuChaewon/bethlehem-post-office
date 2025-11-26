@@ -73,9 +73,11 @@ export default function OrnamentSelect() {
       
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(3, 1fr)', // 한 줄에 3개씩
-        gap: '20px', 
-        justifyContent: 'center' 
+        // 🛠️ 수정: 화면이 좁으면 2개, 넓으면 3개 나오게 자동 조정
+        gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', 
+        gap: '15px', 
+        justifyContent: 'center',
+        width: '100%' // 전체 너비 사용
       }}>
         {currentList.map((item) => (
           <button 
