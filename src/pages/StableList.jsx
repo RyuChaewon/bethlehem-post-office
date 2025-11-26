@@ -23,13 +23,13 @@ export default function StableList() {
         </button>
       </div>
 
-      <h2>👑 예수님께 드리는 예물</h2>
+      <h2>👑 예수님께 드리는 생일 예물</h2>
       <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '20px' }}>
-        왕이신 예수님께 마음을 드려요
+        예수님을 향한 사랑의 마음을 적어보아요
       </p>
       
       {/* 리스트 영역 */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
+      <div className="list-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
         {messages.length === 0 && <p style={{opacity: 0.5, marginTop: '50px'}}>아직 도착한 예물이 없어요</p>}
 
         {messages.map((msg) => (

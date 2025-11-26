@@ -25,11 +25,11 @@ export default function NightSkyList() {
 
       <h2>☁️ 하늘에 새기는 밤편지</h2>
       <p style={{ fontSize: '0.9rem', opacity: 0.7, marginBottom: '20px' }}>
-        공동체를 향한 마음들이 모여있어요
+        공동체를 향한 사랑의 마음을 적어보아요
       </p>
       
       {/* 리스트 영역 (CSS Grid 사용 추천) */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
+      <div className="list-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
         {messages.length === 0 && <p style={{opacity: 0.5, marginTop: '50px'}}>아직 도착한 편지가 없어요</p>}
 
         {messages.map((msg) => (

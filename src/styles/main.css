@@ -1,47 +1,53 @@
-/* src/styles/main.css */
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 파란 박스 제거 */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background-color: #1a1a2e;
   color: white;
   font-family: 'Gowun Batang', serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  /* 모바일 브라우저 주소창 고려한 높이 설정 */
-  min-height: 100dvh; 
-  overflow-x: hidden; /* 좌우 흔들림 방지 */
+  /* 화면 중앙 정렬 제거 -> 스크롤 가능하게 변경 */
+  display: block; 
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
-/* 📱 핵심 컨테이너: 폰 화면에 꽉 차게 */
+/* 📱 핵심 컨테이너 수정 */
 .center-box {
   width: 100%;
   max-width: 420px;
-  /* 상하 40px, 좌우 20px 패딩을 줘서 테두리에 딱 붙지 않게 함 */
-  padding: 40px 20px; 
-  text-align: center;
+  /* 화면 중앙 정렬(center) 대신 위에서부터 쌓이도록(flex-start) 변경 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100dvh;
-  justify-content: center;
+  justify-content: flex-start; 
   
-  /* ⭐ 핵심: 요소들 사이에 무조건 20px 간격을 둠 (겹침 방지) */
-  gap: 20px; 
+  /* 최소 높이는 화면 전체지만, 내용이 많으면 더 길어지게 함 */
+  min-height: 100dvh; 
+  height: auto; 
+
+  /* 위아래 여유 공간을 넉넉히 줌 (겹침 방지) */
+  padding: 60px 20px 80px 20px; 
   
-  /* 내용이 많으면 스크롤 되도록 */
-  overflow-y: auto; 
+  /* 요소들 사이 간격 강제 */
+  gap: 25px; 
+  
+  /* 중앙 정렬을 위해 마진 오토 사용 */
+  margin: 0 auto;
 }
 
-/* 버튼: 손가락으로 누기 편하게 큼직하게 */
+/* 🛑 중요: 요소들이 찌그러지지 않도록 방지 */
+.center-box > * {
+  flex-shrink: 0; 
+  max-width: 100%; /* 가로로 튀어 나가는 것 방지 */
+}
+
+/* --- 버튼 스타일 --- */
 button {
   cursor: pointer;
   font-family: inherit;
@@ -51,27 +57,35 @@ button {
   border: none;
   transition: transform 0.1s;
 }
-button:active {
-  transform: scale(0.96);
-}
+button:active { transform: scale(0.96); }
 
-/* 입력창: 폰에서 작게 보이지 않도록 */
+/* --- 입력창 스타일 --- */
 input, textarea {
   font-family: inherit;
-  font-size: 16px; /* 16px 이상이어야 아이폰에서 확대 안 됨 */
-  padding: 12px;
+  font-size: 16px; 
+  padding: 15px; /* 터치하기 편하게 조금 더 키움 */
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.3);
   background: rgba(255,255,255,0.1);
   color: white;
-  width: 100%; /* 부모 너비에 맞춤 */
+  width: 100%;
   outline: none;
+  resize: none; /* 사용자 임의 크기 조절 방지 */
 }
 
-/* --- 기존 디자인 유지 --- */
+/* --- 리스트 영역 스타일 (겹침 방지) --- */
+/* 메시지 리스트를 감싸는 div에 줄 클래스 (없으면 추가 추천) */
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 20px; /* 아래쪽 버튼과 겹치지 않게 */
+}
+
 .message-card {
-  /* 폰 화면에서는 3개는 좁을 수 있어서 크기 조절 */
-  width: 30%; /* 화면 너비의 30% */
+  width: calc(33.33% - 10px); /* 한 줄에 3개씩 정확히 계산 */
   min-width: 90px;
   height: 110px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -82,74 +96,68 @@ input, textarea {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-bottom: 10px;
+  /* 카드끼리 겹치지 않게 마진 대신 flex gap 사용 */
 }
 
 .message-icon { font-size: 2.5rem; margin-bottom: 5px; }
 .message-name { font-size: 0.8rem; opacity: 0.8; overflow: hidden; white-space: nowrap; width: 90%; text-overflow: ellipsis;}
 
-/* 작성 버튼 */
+/* --- 메시지 읽기 (좌우 꽉 차게) --- */
+.detail-card-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px; 
+  width: 100%;
+  /* 높이가 줄어들지 않도록 설정 */
+  flex-grow: 1; 
+}
+
+.detail-card {
+  flex: 1;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 30px 20px; /* 내부 여백 넉넉히 */
+  min-height: 400px; /* 카드 최소 높이 확보 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.nav-arrow-btn {
+  font-size: 2.5rem;
+  padding: 10px 5px; /* 터치 영역 확보 */
+  background: none; border: none; color: white;
+  flex-shrink: 0;
+}
+
+/* 작성 완료 버튼 */
 .write-btn {
-  margin-top: 20px;
-  width: 80%; /* 버튼을 넓게 */
+  width: 100%; /* 모바일에서는 꽉 차는 게 예쁨 */
+  max-width: 300px;
+  padding: 15px;
   background-color: white;
   color: #1a1a2e;
   font-weight: bold;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  margin-top: auto; /* 내용이 적어도 버튼은 아래로 밀어줌 */
 }
 
 /* 뒤로가기 버튼 영역 */
 .back-btn-area {
   width: 100%;
   text-align: left;
+  /* 상단 고정 느낌을 위해 마진 조정 */
   margin-bottom: 10px;
-  padding-left: 5px;
 }
 .back-btn {
-  background: none;
+  background: rgba(255, 255, 255, 0.1); /* 배경 살짝 넣어서 글씨 겹쳐도 보이게 */
   border: 1px solid rgba(255,255,255,0.5);
   color: white;
   padding: 8px 15px;
   border-radius: 20px;
   font-size: 0.9rem;
-}
-
-.detail-card-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* 양 끝으로 벌림 */
-  gap: 10px; 
-  width: 100%; /* 부모 너비 꽉 채우기 */
-}
-
-.detail-card {
-  flex: 1; /* 남은 공간을 카드가 모두 차지하도록 함 */
-  width: 100%; /* 가로로 꽉 차게 강제 */
-  
-  background-color: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  
-  /* 내부 패딩을 줄여서 글자 공간 확보 (기존 30px -> 20px) */
-  padding: 25px 20px; 
-  
-  min-height: 350px; /* 높이도 조금 더 시원하게 */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  
-  /* 카드가 너무 작아지지 않게 최소 너비 보장 */
-  min-width: 0; 
-}
-
-/* 화살표 버튼은 크기를 유지하되, 공간을 많이 뺏지 않게 */
-.nav-arrow-btn {
-  font-size: 2rem; /* 화살표 크기 살짝 조정 */
-  padding: 10px 5px; /* 좌우 패딩을 줄임 */
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  flex-shrink: 0; /* 카드가 커져도 화살표가 찌그러지지 않게 */
 }
