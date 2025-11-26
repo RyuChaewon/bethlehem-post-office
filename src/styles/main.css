@@ -24,14 +24,21 @@ body {
 /* 📱 핵심 컨테이너: 폰 화면에 꽉 차게 */
 .center-box {
   width: 100%;
-  max-width: 420px; /* 아이폰 Max 너비 정도까지만 커지게 */
-  padding: 20px;
+  max-width: 420px;
+  /* 상하 40px, 좌우 20px 패딩을 줘서 테두리에 딱 붙지 않게 함 */
+  padding: 40px 20px; 
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100dvh; /* 세로로 꽉 차게 */
-  justify-content: center; /* 내용 중앙 정렬 */
+  min-height: 100dvh;
+  justify-content: center;
+  
+  /* ⭐ 핵심: 요소들 사이에 무조건 20px 간격을 둠 (겹침 방지) */
+  gap: 20px; 
+  
+  /* 내용이 많으면 스크롤 되도록 */
+  overflow-y: auto; 
 }
 
 /* 버튼: 손가락으로 누기 편하게 큼직하게 */
@@ -107,28 +114,42 @@ input, textarea {
   font-size: 0.9rem;
 }
 
-/* 상세 페이지 카드 */
 .detail-card-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* 양 끝으로 벌림 */
   gap: 10px; 
-  width: 100%;
+  width: 100%; /* 부모 너비 꽉 채우기 */
 }
+
 .detail-card {
-  flex-grow: 1;
+  flex: 1; /* 남은 공간을 카드가 모두 차지하도록 함 */
+  width: 100%; /* 가로로 꽉 차게 강제 */
+  
   background-color: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
-  padding: 20px;
-  min-height: 300px;
+  
+  /* 내부 패딩을 줄여서 글자 공간 확보 (기존 30px -> 20px) */
+  padding: 25px 20px; 
+  
+  min-height: 350px; /* 높이도 조금 더 시원하게 */
   display: flex;
   flex-direction: column;
   justify-content: center;
+  
+  /* 카드가 너무 작아지지 않게 최소 너비 보장 */
+  min-width: 0; 
 }
+
+/* 화살표 버튼은 크기를 유지하되, 공간을 많이 뺏지 않게 */
 .nav-arrow-btn {
-  font-size: 2.5rem;
-  padding: 5px;
-  background: none; border: none; color: white;
+  font-size: 2rem; /* 화살표 크기 살짝 조정 */
+  padding: 10px 5px; /* 좌우 패딩을 줄임 */
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0; /* 카드가 커져도 화살표가 찌그러지지 않게 */
 }
