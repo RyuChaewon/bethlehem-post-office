@@ -1,53 +1,103 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap');
 
+/* --- 1. 기본 초기화 (Reset) --- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 파란 박스 제거 */
 }
 
 body {
   background-color: #1a1a2e;
   color: white;
   font-family: 'Gowun Batang', serif;
-  /* 화면 중앙 정렬 제거 -> 스크롤 가능하게 변경 */
-  display: block; 
+  display: block;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
 }
 
-/* 📱 핵심 컨테이너 수정 */
+/* --- 2. 레이아웃 A: 중앙 정렬형 (인트로, 메인, 상세화면용) --- */
 .center-box {
   width: 100%;
   max-width: 420px;
-  /* 화면 중앙 정렬(center) 대신 위에서부터 쌓이도록(flex-start) 변경 */
+  min-height: 100dvh; /* 화면 높이에 맞춤 */
+  margin: 0 auto;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; 
+  justify-content: center; /* 수직 중앙 정렬 */
   
-  /* 최소 높이는 화면 전체지만, 내용이 많으면 더 길어지게 함 */
-  min-height: 100dvh; 
-  height: auto; 
-
-  /* 위아래 여유 공간을 넉넉히 줌 (겹침 방지) */
-  padding: 60px 20px 80px 20px; 
-  
-  /* 요소들 사이 간격 강제 */
-  gap: 25px; 
-  
-  /* 중앙 정렬을 위해 마진 오토 사용 */
-  margin: 0 auto;
+  padding: 20px;
+  gap: 20px; /* 요소 사이 간격 */
 }
 
-/* 🛑 중요: 요소들이 찌그러지지 않도록 방지 */
+/* center-box 내부 요소가 찌그러지지 않게 */
 .center-box > * {
-  flex-shrink: 0; 
-  max-width: 100%; /* 가로로 튀어 나가는 것 방지 */
+  flex-shrink: 0;
+  max-width: 100%;
 }
 
-/* --- 버튼 스타일 --- */
+/* --- 3. 레이아웃 B: 리스트형 (밤하늘, 마구간용) --- */
+/* 상단/하단은 고정되고 가운데만 스크롤 되는 구조 */
+.list-layout {
+  width: 100%;
+  max-width: 420px;
+  height: 100dvh; /* 높이 고정 */
+  margin: 0 auto;
+  
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 전체 스크롤 막기 */
+}
+
+/* [B-1] 리스트 헤더 (고정) */
+.list-header {
+  flex-shrink: 0;
+  padding: 20px 20px 10px 20px;
+  text-align: center;
+  z-index: 10;
+}
+
+/* [B-2] 리스트 컨텐츠 (스크롤 영역) */
+.list-content {
+  flex: 1; /* 남은 공간 차지 */
+  width: 100%;
+  overflow-y: auto; /* 여기만 스크롤 */
+  padding: 0 15px; /* 좌우 여백 */
+  
+  /* 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.list-content::-webkit-scrollbar { display: none; }
+
+/* [B-3] 리스트 푸터 (고정) */
+.list-footer {
+  flex-shrink: 0;
+  padding: 20px;
+  text-align: center;
+  z-index: 10;
+  padding-bottom: 30px; /* 바닥 여유 공간 */
+}
+
+/* --- 4. 테마 디자인 (배경색) --- */
+/* 🌌 밤하늘 테마 */
+.theme-sky {
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  color: white;
+}
+
+/* 🐴 마구간 테마 */
+.theme-stable {
+  background: radial-gradient(circle at 50% 10%, #6b4c35 0%, #3e2723 60%, #1a120b 100%);
+  color: #ffe0b2;
+}
+
+/* --- 5. 컴포넌트 스타일 --- */
+
+/* 버튼 공통 */
 button {
   cursor: pointer;
   font-family: inherit;
@@ -59,57 +109,95 @@ button {
 }
 button:active { transform: scale(0.96); }
 
-/* --- 입력창 스타일 --- */
+/* 뒤로가기 버튼 */
+.back-btn-area {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 10px;
+}
+.back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.5);
+  color: inherit; /* 부모 색상 따름 */
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* 입력창 */
 input, textarea {
   font-family: inherit;
   font-size: 16px; 
-  padding: 15px; /* 터치하기 편하게 조금 더 키움 */
+  padding: 15px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.3);
   background: rgba(255,255,255,0.1);
-  color: white;
+  color: inherit;
   width: 100%;
   outline: none;
-  resize: none; /* 사용자 임의 크기 조절 방지 */
+  resize: none;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(255,255,255,0.5);
 }
 
-/* --- 리스트 영역 스타일 (겹침 방지) --- */
-/* 메시지 리스트를 감싸는 div에 줄 클래스 (없으면 추가 추천) */
+/* 작성 완료 버튼 (하단 강조 버튼) */
+.write-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 15px;
+  background-color: white;
+  color: #1a1a2e;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* 마구간 테마일 때 버튼 색상 변경 */
+.theme-stable .write-btn {
+  background-color: #ffb74d;
+  color: #3e2723;
+}
+
+/* --- 6. 리스트 & 카드 스타일 --- */
 .list-container {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   justify-content: center;
   width: 100%;
-  padding-bottom: 20px; /* 아래쪽 버튼과 겹치지 않게 */
+  padding-bottom: 20px;
 }
 
 .message-card {
-  width: calc(33.33% - 10px); /* 한 줄에 3개씩 정확히 계산 */
+  width: calc(33.33% - 10px); /* 3열 그리드 */
   min-width: 90px;
   height: 110px;
+  
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  /* 카드끼리 겹치지 않게 마진 대신 flex gap 사용 */
+}
+.theme-stable .message-card {
+  background-color: rgba(62, 39, 35, 0.4);
+  border-color: rgba(255, 204, 128, 0.3);
 }
 
 .message-icon { font-size: 2.5rem; margin-bottom: 5px; }
-.message-name { font-size: 0.8rem; opacity: 0.8; overflow: hidden; white-space: nowrap; width: 90%; text-overflow: ellipsis;}
+.message-name { font-size: 0.8rem; opacity: 0.8; overflow: hidden; white-space: nowrap; width: 90%; text-overflow: ellipsis; text-align: center;}
 
-/* --- 메시지 읽기 (좌우 꽉 차게) --- */
+/* --- 7. 상세 화면 스타일 --- */
 .detail-card-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px; 
   width: 100%;
-  /* 높이가 줄어들지 않도록 설정 */
   flex-grow: 1; 
 }
 
@@ -120,44 +208,22 @@ input, textarea {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
-  padding: 30px 20px; /* 내부 여백 넉넉히 */
-  min-height: 400px; /* 카드 최소 높이 확보 */
+  padding: 30px 20px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+.theme-stable .detail-card {
+  background-color: rgba(62, 39, 35, 0.6);
+  border-color: rgba(255, 204, 128, 0.4);
+}
 
 .nav-arrow-btn {
   font-size: 2.5rem;
-  padding: 10px 5px; /* 터치 영역 확보 */
-  background: none; border: none; color: white;
+  padding: 10px 5px;
+  background: none; border: none; color: inherit;
   flex-shrink: 0;
+  opacity: 0.7;
 }
-
-/* 작성 완료 버튼 */
-.write-btn {
-  width: 100%; /* 모바일에서는 꽉 차는 게 예쁨 */
-  max-width: 300px;
-  padding: 15px;
-  background-color: white;
-  color: #1a1a2e;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  margin-top: auto; /* 내용이 적어도 버튼은 아래로 밀어줌 */
-}
-
-/* 뒤로가기 버튼 영역 */
-.back-btn-area {
-  width: 100%;
-  text-align: left;
-  /* 상단 고정 느낌을 위해 마진 조정 */
-  margin-bottom: 10px;
-}
-.back-btn {
-  background: rgba(255, 255, 255, 0.1); /* 배경 살짝 넣어서 글씨 겹쳐도 보이게 */
-  border: 1px solid rgba(255,255,255,0.5);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-}
+.nav-arrow-btn:disabled { opacity: 0.1; }
