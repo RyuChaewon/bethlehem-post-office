@@ -35,12 +35,13 @@ export const saveMessage = async (messageData) => {
 export const getMessages = async (theme, lastDoc = null) => {
   try {
     let q;
+    const MSG_LIMIT = 10;
     if (!lastDoc) {
       q = query(
         collection(db, COLLECTION_NAME),
         where("theme", "==", theme),
         orderBy("createdAt", "desc"),
-        limit(20)
+        limit(MSG_LIMIT)
       );
     } else {
       q = query(
@@ -48,7 +49,7 @@ export const getMessages = async (theme, lastDoc = null) => {
         where("theme", "==", theme),
         orderBy("createdAt", "desc"),
         startAfter(lastDoc),
-        limit(20)
+        limit(MSG_LIMIT)
       );
     }
     
@@ -111,5 +112,43 @@ export const getVisitorCountOnly = async () => {
     // [수정됨] error 변수를 사용하도록 console.error 추가
     console.error("Error getting visitor count:", error);
     return 0;
+  }
+};
+
+// [추가] 이전/다음 메시지 ID 찾기
+// direction: 'prev' (최신글 방향) 또는 'next' (과거글 방향)
+export const getAdjacentMessageId = async (theme, currentCreatedAt, direction) => {
+  try {
+    let q;
+    const colRef = collection(db, COLLECTION_NAME);
+
+    if (direction === 'prev') {
+      // 이전 글 (더 최신 글 찾기): 현재 시간보다 크고, 오름차순 정렬 중 첫 번째
+      q = query(
+        colRef,
+        where("theme", "==", theme),
+        where("createdAt", ">", currentCreatedAt),
+        orderBy("createdAt", "asc"), // 시간순으로 가장 가까운 미래
+        limit(1)
+      );
+    } else {
+      // 다음 글 (더 옛날 글 찾기): 현재 시간보다 작고, 내림차순 정렬 중 첫 번째
+      q = query(
+        colRef,
+        where("theme", "==", theme),
+        where("createdAt", "<", currentCreatedAt),
+        orderBy("createdAt", "desc"), // 시간순으로 가장 가까운 과거
+        limit(1)
+      );
+    }
+
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      return snapshot.docs[0].id; // 찾은 메시지 ID 반환
+    }
+    return null; // 없으면 null
+  } catch (error) {
+    console.error("Error finding adjacent message:", error);
+    return null;
   }
 };

@@ -1,111 +1,195 @@
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import BackgroundLayout from '../components/BackgroundLayout';
 import { saveMessage } from '../firebase/messageService';
 
+// 이미지 에셋
+import bgWrite from '../assets/bg-write.svg';
+import btnWriteX from '../assets/btn-write-x.svg'; // X 버튼 (MessageForm과 동일)
+import imgIconBox from '../assets/img-icon-box.svg'; // 아이콘 박스 배경
+import btnBack from '../assets/btn-back.svg'; // 뒤로가기 버튼
+
+// 아이콘들
+import { SKY_ICONS, STABLE_ICONS } from '../assets';
+
 export default function OrnamentSelect() {
+  const { theme } = useParams();
   const navigate = useNavigate();
-  const { theme } = useParams(); // 'sky' 또는 'stable'
-  const { state } = useLocation(); // 작성 페이지에서 넘어온 데이터
+  const location = useLocation();
 
-  // 1. 테마별 오너먼트 리스트 정의
-  const skyOrnaments = [
-    { icon: '⭐', name: '샛별' },
-    { icon: '🌙', name: '달님' },
-    { icon: '🌌', name: '은하수' },
-    { icon: '🌠', name: '별똥별' },
-    { icon: '☁️', name: '구름' },
-    { icon: '❄️', name: '눈송이' },
-  ];
+  // 이전 페이지(MessageForm)에서 넘겨준 데이터 받기
+  const { nickname, content } = location.state || { nickname: '', content: '' };
 
-  const stableOrnaments = [
-    { icon: '🎁', name: '선물상자' },
-    { icon: '👑', name: '황금(왕관)' },
-    { icon: '🏺', name: '몰약(향유)' },
-    { icon: '🌿', name: '유향(풀)' },
-    { icon: '🕯️', name: '촛불' },
-    { icon: '🧶', name: '털실' },
-  ];
+  // 테마에 맞는 아이콘 세트 선택
+  const icons = theme === 'sky' ? SKY_ICONS : STABLE_ICONS;
+  
+  // 저장 중복 방지용 상태
+  const [isSaving, setIsSaving] = useState(false);
 
-  // 2. 현재 테마에 맞는 리스트 선택
-  const currentList = theme === 'sky' ? skyOrnaments : stableOrnaments;
+  // [기능 1] X 버튼: 목록 페이지로 취소하고 나감
+  const handleClose = () => {
+    navigate(`/${theme}`);
+  };
 
-  const handleSelect = async (selectedItem) => {
-    // 예외 처리: 만약 작성 내용 없이 바로 들어왔다면 튕겨내기
-    if (!state) {
-      alert("잘못된 접근입니다. 편지를 먼저 써주세요!");
-      navigate(`/write/${theme}`);
+  // [기능 2] Back 버튼: 작성 페이지로 돌아가기 (내용 유지)
+  // MessageForm의 Next 버튼 위치와 대칭되도록 배치하고, 데이터를 다시 전달합니다.
+  const handleBack = () => {
+    navigate(`/${theme}/write`, { state: { nickname, content } });
+  };
+
+  // [기능 3] 아이콘 클릭: 저장 후 목록으로 이동
+  const handleIconClick = async (index) => {
+    if (isSaving) return; 
+    
+    if (!nickname || !content) {
+      alert("메시지 내용이 없습니다. 다시 작성해주세요.");
+      navigate(`/${theme}/write`);
       return;
     }
 
+    setIsSaving(true);
     try {
-      const messageData = {
-        nickname: state.nickname,
-        content: state.content,
-        ornament: selectedItem.icon, // 아이콘 저장
-        ornamentName: selectedItem.name, // (선택사항) 이름도 저장해두면 나중에 좋음
-        theme: theme,
-      };
+      await saveMessage({
+        theme,
+        nickname,
+        content,
+        iconIndex: index,
+      });
 
-      // 저장 중임을 알림
-      const confirmSave = confirm(`'${selectedItem.name}' 오너먼트로 보내시겠습니까?`);
-      if (!confirmSave) return;
-
-      await saveMessage(messageData);
+      // 저장 후 해당 테마의 리스트로 이동
+      navigate(`/${theme}`);
       
-      alert("배달이 완료되었습니다! 📮");
-      navigate(theme === 'sky' ? '/sky' : '/stable'); // 해당 리스트로 이동
-
     } catch (error) {
-      console.error(error);
-      alert("전송에 실패했습니다.");
+      console.error("저장 실패:", error);
+      alert("오류가 발생했습니다.");
+      setIsSaving(false);
     }
   };
 
   return (
-    <div className="center-box">
-      <h3 style={{ marginBottom: '10px' }}>
-        {theme === 'sky' ? '☁️ 밤하늘 꾸미기' : '👑 예물 고르기'}
-      </h3>
-      <p style={{ marginBottom: '30px', opacity: 0.8 }}>
-        {theme === 'sky' 
-          ? '공동체의 하늘에 띄울 별을 골라주세요' 
-          : '아기 예수님께 드릴 예물을 골라주세요'}
-      </p>
+    <BackgroundLayout image={bgWrite}>
       
-      <div style={{ 
-        display: 'grid', 
-        // 🛠️ 수정: 화면이 좁으면 2개, 넓으면 3개 나오게 자동 조정
-        gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', 
-        gap: '15px', 
+      <style>
+        {`@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");`}
+      </style>
+
+      {/* --- 1. X 닫기 버튼 (MessageForm과 동일 위치) --- */}
+      <button
+        onClick={handleClose}
+        style={{
+          position: 'absolute',
+          top: '9.36%', 
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '36px',
+          height: '37px',
+          background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 20
+        }}
+      >
+        <img src={btnWriteX} alt="Close" style={{ width: '100%', height: '100%' }} />
+      </button>
+
+      {/* --- 2. 안내 텍스트 (닉네임 칸 위치) --- */}
+      <div style={{
+        position: 'absolute',
+        top: '16%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '300px', // MessageForm과 동일 너비
+        height: '60px',
+        display: 'flex',
         justifyContent: 'center',
-        width: '100%' // 전체 너비 사용
+        alignItems: 'center',
+        zIndex: 20
       }}>
-        {currentList.map((item) => (
-          <button 
-            key={item.name} 
-            onClick={() => handleSelect(item)}
-            style={{ 
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '15px',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)', // 반투명 배경
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '15px',
-              cursor: 'pointer'
-            }}
-          >
-            <span style={{ fontSize: '30px', marginBottom: '5px' }}>{item.icon}</span>
-            <span style={{ fontSize: '12px' }}>{item.name}</span>
-          </button>
-        ))}
+        <span style={{
+          fontFamily: "'Pretendard', sans-serif",
+          fontSize: '16px',
+          color: 'white',
+          fontWeight: '200',
+        }}>
+          메세지를 담을 별을 고르세요
+        </span>
       </div>
 
-      <button 
-        onClick={() => navigate(-1)} 
-        style={{ marginTop: '30px', background: 'transparent', border: '1px solid gray', color: 'gray' }}
+      {/* --- 3. 아이콘 선택 박스 (내용 칸 위치) --- */}
+      <div style={{
+        position: 'absolute',
+        top: '25%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '300px', // MessageForm과 동일 너비
+      }}>
+        {/* 박스 배경 이미지 (높이는 자동 조절) */}
+        <img 
+          src={imgIconBox} 
+          alt="Icon Box" 
+          style={{ width: '100%', height: 'auto', display: 'block' }} 
+        />
+
+        {/* 아이콘 그리드 컨테이너 (이미지 위에 덮어씌움) */}
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          
+          padding: '20px', // 박스 내부 여백
+          boxSizing: 'border-box',
+          
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)', // 3열 배치
+          gap: '20px',
+          
+          overflowY: 'auto', // 아이콘 많으면 스크롤
+          alignContent: 'start',
+          
+          // 스크롤바 숨김
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }} className="hide-scrollbar">
+          
+          <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
+
+          {icons.map((icon, index) => (
+            <div
+              key={index}
+              onClick={() => handleIconClick(index)}
+              style={{
+                aspectRatio: '1/1', // 정사각형 비율
+                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'transform 0.1s',
+              }}
+            >
+              <img 
+                src={icon} 
+                alt={`icon-${index}`} 
+                style={{ width: '95%', height: '95%', objectFit: 'contain' }} 
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* --- 4. Back 버튼 (하단 좌측) --- */}
+      <button
+        onClick={handleBack}
+        style={{
+          position: 'absolute',
+          top: '86%', // MessageForm의 Next 버튼(bottom: 15%)과 높이 맞춤
+          left: '11%',   // MessageForm(right: 8%)과 좌우 대칭
+          width: '48px',
+          height: '22px',
+          background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 20
+        }}
       >
-        뒤로가기
+        <img src={btnBack} alt="Back" style={{ width: '100%', height: '100%' }} />
       </button>
-    </div>
+
+    </BackgroundLayout>
   );
 }

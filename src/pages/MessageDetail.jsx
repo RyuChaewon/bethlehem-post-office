@@ -1,117 +1,155 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-// ⭐️ getMessageById (단건 조회) 함수가 필요합니다.
-import { getMessageById } from '../firebase/messageService'; 
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import BackgroundLayout from '../components/BackgroundLayout';
+import { getMessageById, getAdjacentMessageId } from '../firebase/messageService';
 
-export default function MessageDetail() {
-  const navigate = useNavigate();
+import bgNightSkyRead from '../assets/bg-nightsky-read.svg'; 
+import bgStableRead from '../assets/bg-stable-read.svg';
+
+import btnReadX from '../assets/btn-read-x.svg';
+import imgReadBox from '../assets/img-read-box.svg';
+import btnLeft from '../assets/btn-left.svg';
+import btnRight from '../assets/btn-right.svg';
+
+const MessageDetail = () => {
   const { theme, id } = useParams();
-  const { state } = useLocation(); // 🚚 리스트에서 보낸 짐(목록) 받기
-
-  const [messages, setMessages] = useState([]); 
+  const navigate = useNavigate();
+  
+  const [message, setMessage] = useState(null);
+  const [prevId, setPrevId] = useState(null);
+  const [nextId, setNextId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // [수정] 테마와 이미지가 반대로 매칭되도록 순서를 바꿨습니다.
+  // 혹시 파일명이 헷갈리게 저장되어 있을 수 있어서, 
+  // 화면에 '마구간'이 뜬다면 여기서 bgStableRead와 bgNightSkyRead의 위치를 바꿔주시면 됩니다.
+  // const bgImage = theme === 'sky' ? bgNightSkyRead : bgStableRead;
+  
+  // 만약 위 코드로도 반대로 나온다면, 아래 주석 코드로 바꿔보세요!
+  const bgImage = theme === 'sky' ? bgStableRead : bgNightSkyRead;
+
   useEffect(() => {
-    const loadData = async () => {
+    const fetchMessageData = async () => {
       setLoading(true);
+      try {
+        const data = await getMessageById(id);
+        setMessage(data);
 
-      // 1. 리스트에서 넘어온 목록이 있는 경우 (화살표 가능)
-      if (state && state.list) {
-        setMessages(state.list);
-        setLoading(false);
-      } 
-      // 2. 새로고침 등으로 목록 없이 들어온 경우 (화살표 불가, 단건 조회)
-      else {
-        const singleMsg = await getMessageById(id);
-        if (singleMsg) {
-          setMessages([singleMsg]); // 목록에 이거 하나만 넣음
+        if (data) {
+          const prev = await getAdjacentMessageId(theme, data.createdAt, 'prev');
+          setPrevId(prev);
+          const next = await getAdjacentMessageId(theme, data.createdAt, 'next');
+          setNextId(next);
         }
-        setLoading(false);
+      } catch (error) {
+        console.error("데이터 로딩 실패:", error);
       }
+      setLoading(false);
     };
-    loadData();
-  }, [id, state]);
 
-  // 로딩 중
-  if (loading) return <div className="center-box"><p>편지를 뜯는 중...📮</p></div>;
+    fetchMessageData();
+  }, [id, theme]);
 
-  // 현재 보고 있는 메시지 찾기
-  const currentIndex = messages.findIndex((msg) => msg.id === id);
-  const currentMessage = messages[currentIndex];
-
-  if (!currentMessage) {
-    return (
-      <div className="center-box">
-        <p>편지를 찾을 수 없어요 😢</p>
-        <button onClick={() => navigate(`/${theme}`)} className="back-btn">목록으로</button>
-      </div>
-    );
-  }
-
-  // 이전/다음 ID 계산 (목록이 1개뿐이면 앞뒤가 없으므로 자동으로 버튼이 숨겨짐)
-  const prevId = currentIndex > 0 ? messages[currentIndex - 1].id : null;
-  const nextId = currentIndex < messages.length - 1 ? messages[currentIndex + 1].id : null;
-
-  const handleMove = (targetId) => {
-    if (targetId) {
-      // 이동할 때도 현재 목록(messages)을 계속 들고 다녀야 함!
-      navigate(`/read/${theme}/${targetId}`, { state: { list: messages } });
-    }
+  const handlePrev = () => {
+    if (prevId) navigate(`/${theme}/detail/${prevId}`);
   };
 
+  const handleNext = () => {
+    if (nextId) navigate(`/${theme}/detail/${nextId}`);
+  };
+
+  if (loading) return <BackgroundLayout image={bgImage} />;
+
   return (
-    <div className={`center-box theme-${theme}`}>
-      {/* 닫기 버튼 */}
-      <div className="back-btn-area" style={{ textAlign: 'right' }}>
-        <button onClick={() => navigate(`/${theme}`)} className="back-btn" style={{ fontSize: '1.5rem', border: 'none' }}>
-          ✕
-        </button>
-      </div>
+    <BackgroundLayout image={bgImage}>
+      
+      <style>
+        {`@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");`}
+      </style>
 
-      <div className="detail-card-container">
-        {/* ⬅️ 이전 버튼 (없으면 안 보임) */}
-        <button 
-          className="nav-arrow-btn" 
-          onClick={() => handleMove(prevId)} 
-          disabled={!prevId}
-          style={{ visibility: !prevId ? 'hidden' : 'visible' }}
-        >
-          ‹
-        </button>
+      {/* X 버튼 */}
+      <button
+        onClick={() => navigate(`/${theme}`)} 
+        style={{
+          position: 'absolute',
+          top: '17.41%', 
+          left: '82.82%',
+          width: '36px',
+          height: '37px',
+          background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 20
+        }}
+      >
+        <img src={btnReadX} alt="Close" style={{ width: '100%', height: '100%' }} />
+      </button>
 
-        {/* 💌 메시지 내용 */}
-        <div className="detail-card">
-          <div style={{ fontSize: '5rem', marginBottom: '20px' }}>
-            {currentMessage.ornament}
-          </div>
-          
-          <div style={{ 
-            fontSize: '1.1rem', 
-            lineHeight: '1.6', 
-            whiteSpace: 'pre-wrap', 
-            textAlign: 'left',
-            flexGrow: 1, 
-            display: 'flex', alignItems: 'center',
-            marginBottom: '20px'
-          }}>
-            {currentMessage.content}
-          </div>
+      {/* 메시지 확인 창 */}
+      <div style={{
+        position: 'absolute',
+        top: '23.34%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '327px',
+        height: '397px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10
+      }}>
+        
+        <img 
+          src={imgReadBox} 
+          alt="Message Box" 
+          style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0 }} 
+        />
 
-          <div style={{ textAlign: 'right', opacity: 0.8, marginTop: 'auto' }}>
-            From. <strong>{currentMessage.nickname}</strong>
-          </div>
+        {prevId && (
+          <button
+            onClick={handlePrev}
+            style={{
+              position: 'absolute', top: '15px', left: '5px',
+              background: 'none', border: 'none', cursor: 'pointer', zIndex: 30
+            }}
+          >
+            <img src={btnLeft} alt="Prev" />
+          </button>
+        )}
+
+        {nextId && (
+          <button
+            onClick={handleNext}
+            style={{
+              position: 'absolute', top: '15px', right: '5px',
+              background: 'none', border: 'none', cursor: 'pointer', zIndex: 30
+            }}
+          >
+            <img src={btnRight} alt="Next" />
+          </button>
+        )}
+
+        <div style={{
+          position: 'absolute', top: '80px', left: '35px', 
+          fontFamily: "'Pretendard', sans-serif", fontSize: '18px',
+          display: 'flex', gap: '8px', zIndex: 20
+        }}>
+          <span style={{ color: '#536B8F', fontWeight: 'bold' }}>From.</span>
+          <span style={{ color: 'black', fontWeight: '500' }}>
+            {message?.nickname || '익명'}
+          </span>
         </div>
 
-        {/* ➡️ 다음 버튼 (없으면 안 보임) */}
-        <button 
-          className="nav-arrow-btn" 
-          onClick={() => handleMove(nextId)} 
-          disabled={!nextId}
-          style={{ visibility: !nextId ? 'hidden' : 'visible' }}
-        >
-          ›
-        </button>
+        <div style={{
+          position: 'absolute', top: '130px', 
+          width: '256px', height: '240px', 
+          overflowY: 'auto', 
+          fontFamily: "'Pretendard', sans-serif", fontSize: '17px', color: '#333',
+          lineHeight: '1.6', whiteSpace: 'pre-wrap', zIndex: 20,
+        }} className="hide-scrollbar">
+          {message?.content}
+        </div>
+
       </div>
-    </div>
+    </BackgroundLayout>
   );
-}
+};
+
+export default MessageDetail;
