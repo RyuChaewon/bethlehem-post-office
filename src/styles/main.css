@@ -110,11 +110,7 @@ html, body, #root, .App {
   margin-top: auto; 
 }
 
-/* =========================================
-   3. 기타 디자인 요소 (기존 유지)
-   ========================================= */
-.theme-sky { /* 이미지 url */ }
-.theme-stable { color: #ffe0b2; }
+
 
 button {
   cursor: pointer;
