@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap');
 
-/* --- 1. 기본 초기화 (Reset) --- */
+/* =========================================
+   1. [초기화] 중앙 정렬의 뿌리를 뽑음
+   ========================================= */
 * {
   margin: 0;
   padding: 0;
@@ -8,98 +10,112 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-body {
-  /* [수정] 요청하신 PC 배경색 (남색) */
-  background-color: #1C2333; 
-  color: white;
-  font-family: 'Gowun Batang', serif;
-  display: block;
-  min-height: 100dvh;
-  overflow-x: hidden;
+/* html, body, #root까지 모두 잡아서
+   "너네는 절대 중앙 정렬 하지 말고, 높이 제한도 두지 마"라고 설정 */
+html, body, #root, .App {
+  width: 100%;
   
-  /* 스크롤바 커스텀 (선택사항) */
-  scrollbar-width: none; /* 파이어폭스 */
-}
-body::-webkit-scrollbar {
-  display: none; /* 크롬, 사파리 스크롤바 숨김 */
+  /* [중요] 높이를 100vh로 고정하면 스크롤이 막힘 -> auto로 풀고 최소 높이만 지정 */
+  height: auto !important; 
+  min-height: 100vh;
+  
+  /* [핵심] 중앙 정렬의 원흉인 Flex를 Body레벨에서 제거 */
+  display: block !important; 
+  
+  /* 기본 배경색 */
+  background-color: #1C2333;
+  
+  /* 스크롤 설정: 가로는 막고 세로는 허용 */
+  overflow-x: hidden;
+  overflow-y: auto !important; 
 }
 
-/* --- 2. 레이아웃 A: 중앙 정렬형 (인트로, 메인 등) --- */
-/* BackgroundLayout 안에서 100%로 꽉 차게 변경 */
-.center-box {
-  width: 100%; 
-  height: 100%;     /* 부모 높이 채움 */
-  min-height: 100dvh; /* 최소 높이 보장 */
+/* =========================================
+   2. [핵심] 배경 비율 강제 고정 & 상단 부착
+   ========================================= */
+
+.center-box, .list-layout {
+  /* 1. 가로 너비는 화면 꽉 채움 */
+  width: 100%;
   
+  /* 2. [여기가 제일 중요합니다]
+     내용물이 적어도, 높이는 무조건 "너비의 2.16배(844/390)"가 되도록 강제합니다.
+     이렇게 해야 배경 이미지가 100% 다 그려질 공간이 확보됩니다.
+     화면(뷰포트)이 이 높이보다 작으면? 즉시 스크롤바가 생깁니다. */
+  min-height: calc(100vw * (844 / 390)) !important;
+  
+  /* 3. 혹시 내용이 배경보다 더 길어지면 높이를 늘려줌 */
+  height: auto; 
+
+  /* 4. 배경 이미지 설정 */
+  background-size: 100% auto;   /* 가로는 딱 맞게, 세로는 비율대로 */
+  background-position: top center; /* 무조건 위쪽 끝에 맞춤 (중앙 정렬 X) */
+  background-repeat: no-repeat;
+  background-attachment: scroll; 
+
+  /* 5. 내부 요소 배치 (Flex 사용하되 상단 정렬) */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   
-  padding: 20px;
+  /* [핵심] justify-content: center 절대 금지 -> 위에서부터 쌓기 */
+  justify-content: flex-start !important; 
+  align-items: center; /* 좌우는 중앙 정렬 */
+  
+  /* 6. 디자인 시안 위치 맞추기 */
+  /* 배경 이미지의 "제목 들어갈 곳"이 맨 위에서 얼마나 떨어져 있나요?
+     그만큼 padding-top을 주면 됩니다. */
+  padding-top: 80px;  
   gap: 20px;
+  
+  /* 하단 여백: 스크롤 끝까지 내렸을 때 답답하지 않게 */
+  padding-bottom: 100px; 
 }
 
+/* --- [A] 센터 박스 추가 설정 --- */
+.center-box {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+/* 요소들이 찌그러지지 않게 설정 */
 .center-box > * {
   flex-shrink: 0;
   max-width: 100%;
 }
 
-/* --- 3. 레이아웃 B: 리스트형 (밤하늘, 마구간) --- */
-/* BackgroundLayout 안에서 꽉 차게 변경 */
+/* --- [B] 리스트 레이아웃 추가 설정 --- */
 .list-layout {
-  width: 100%;
-  height: 100vh; /* 화면 꽉 채움 */
-  
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; 
+  /* 리스트 화면에서도 전체 스크롤을 사용 */
+  overflow: visible !important; 
 }
 
-/* [B-1] 리스트 헤더 */
 .list-header {
-  flex-shrink: 0;
-  padding: 20px 20px 10px 20px;
-  text-align: center;
-  z-index: 10;
-}
-
-/* [B-2] 리스트 컨텐츠 */
-.list-content {
-  flex: 1; 
   width: 100%;
-  overflow-y: auto; 
-  padding: 0 15px; 
-  
-  /* 내부 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  padding: 40px 20px 20px 20px;
+  text-align: center;
 }
-.list-content::-webkit-scrollbar { display: none; }
 
-/* [B-3] 리스트 푸터 */
+.list-content {
+  width: 100%;
+  /* 내부 스크롤 끄기 -> 전체 스크롤에 맡김 */
+  overflow: visible !important; 
+  padding: 0 15px;
+  margin-bottom: 20px;
+}
+
 .list-footer {
-  flex-shrink: 0;
+  width: 100%;
   padding: 20px;
   text-align: center;
-  z-index: 10;
-  padding-bottom: 30px; 
+  /* 버튼이 배경 끝에 위치하도록 밀어주기 */
+  margin-top: auto; 
 }
 
-/* --- 4. 테마 디자인 (필요 시 유지, 배경 이미지가 덮으면 안 보일 수 있음) --- */
-.theme-sky {
-  /* 배경 이미지를 안 쓸 때를 대비한 그라데이션 */
-  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-}
+/* =========================================
+   3. 기타 디자인 요소 (기존 유지)
+   ========================================= */
+.theme-sky { /* 이미지 url */ }
+.theme-stable { color: #ffe0b2; }
 
-.theme-stable {
-  background: radial-gradient(circle at 50% 10%, #6b4c35 0%, #3e2723 60%, #1a120b 100%);
-  color: #ffe0b2;
-}
-
-/* --- 5. 컴포넌트 스타일 --- */
-
-/* 버튼 공통 */
 button {
   cursor: pointer;
   font-family: inherit;
@@ -107,11 +123,7 @@ button {
   padding: 12px 20px;
   border-radius: 12px;
   border: none;
-  transition: transform 0.1s;
 }
-button:active { transform: scale(0.96); }
-
-/* 뒤로가기 버튼 영역 */
 .back-btn-area {
   width: 100%;
   text-align: left;
@@ -120,30 +132,21 @@ button:active { transform: scale(0.96); }
 .back-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255,255,255,0.5);
-  color: inherit; 
+  color: white; 
   padding: 8px 15px;
   border-radius: 20px;
-  font-size: 0.9rem;
 }
-
-/* 입력창 */
 input, textarea {
-  font-family: inherit;
-  font-size: 16px; 
+  font-size: 16px;
   padding: 15px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.3);
   background: rgba(255,255,255,0.1);
-  color: white; /* 글자색 흰색 고정 */
+  color: white; 
   width: 100%;
   outline: none;
   resize: none;
 }
-input::placeholder, textarea::placeholder {
-  color: rgba(255,255,255,0.5);
-}
-
-/* 작성 완료 버튼 */
 .write-btn {
   width: 100%;
   max-width: 300px;
@@ -151,15 +154,11 @@ input::placeholder, textarea::placeholder {
   background-color: white;
   color: #1a1a2e;
   font-weight: bold;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
-
 .theme-stable .write-btn {
   background-color: #ffb74d;
   color: #3e2723;
 }
-
-/* --- 6. 리스트 & 카드 스타일 --- */
 .list-container {
   display: flex;
   flex-wrap: wrap;
@@ -168,73 +167,45 @@ input::placeholder, textarea::placeholder {
   width: 100%;
   padding-bottom: 20px;
 }
-
 .message-card {
   width: calc(33.33% - 10px); 
-  min-width: 90px;
   height: 110px;
-  
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
-  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 .theme-stable .message-card {
   background-color: rgba(62, 39, 35, 0.4);
   border-color: rgba(255, 204, 128, 0.3);
 }
-
 .message-icon { font-size: 2.5rem; margin-bottom: 5px; }
-.message-name { 
-  font-size: 0.8rem; 
-  opacity: 0.8; 
-  overflow: hidden; 
-  white-space: nowrap; 
-  width: 90%; 
-  text-overflow: ellipsis; 
-  text-align: center;
-}
-
-/* --- 7. 상세 화면 스타일 --- */
+.message-name { font-size: 0.8rem; }
 .detail-card-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px; 
   width: 100%;
-  flex-grow: 1; 
 }
-
 .detail-card {
   flex: 1;
-  width: 100%;
   background-color: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   padding: 30px 20px;
   min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 .theme-stable .detail-card {
   background-color: rgba(62, 39, 35, 0.6);
   border-color: rgba(255, 204, 128, 0.4);
 }
-
 .nav-arrow-btn {
   font-size: 2.5rem;
-  padding: 10px 5px;
   background: none; 
   border: none; 
   color: inherit;
-  flex-shrink: 0;
-  opacity: 0.7;
 }
-.nav-arrow-btn:disabled { opacity: 0.1; }
