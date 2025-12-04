@@ -99,11 +99,11 @@ const MessageListLayout = ({ theme, bgImage, writeBtnImage, icons, writePath }) 
         onScroll={handleScroll}
         style={{
           position: 'absolute',
-          top: '26.77%', 
+          top: '30%', 
           left: '50%',
           transform: 'translateX(-50%)',
           width: '320px',
-          height: '443px',
+          height: '370px',
           
           overflowY: 'auto', 
           scrollbarWidth: 'none', 
@@ -159,8 +159,8 @@ const MessageListLayout = ({ theme, bgImage, writeBtnImage, icons, writePath }) 
           position: 'absolute',
           top: '86.01%', 
           left: '42.05%', 
-          width: '62px',
-          height: '65px',
+          width: '52px',
+          height: '55px',
           background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 10
         }}
       >

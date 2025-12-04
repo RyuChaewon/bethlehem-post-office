@@ -52,7 +52,7 @@ export default function MessageForm() {
         onClick={() => navigate(-1)}
         style={{
           position: 'absolute',
-          top: '9.36%', 
+          top: '10%', 
           left: '50%',
           transform: 'translateX(-50%)',
           width: '36px',
@@ -155,7 +155,7 @@ export default function MessageForm() {
         {/* 글자수 카운트 */}
         <div style={{
           position: 'absolute',
-          bottom: '15px',
+          bottom: '14px',
           right: '18px',
           fontSize: '12px',
           color: 'rgba(255, 255, 255, 0.4)',
@@ -171,7 +171,7 @@ export default function MessageForm() {
         onClick={handleNext}
         style={{
           position: 'absolute',
-          top: '86%', 
+          top: '85%', 
           right: '11%',
           width: '48px',
           height: '22px',

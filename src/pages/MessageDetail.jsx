@@ -7,7 +7,7 @@ import bgNightSkyRead from '../assets/bg-nightsky-read.svg';
 import bgStableRead from '../assets/bg-stable-read.svg';
 
 import btnReadX from '../assets/btn-read-x.svg';
-import imgReadBox from '../assets/img-read-box.svg';
+import imgReadBox from '../assets/img-read-box.svg'; // 327x450 비율의 이미지 사용 권장
 import btnLeft from '../assets/btn-left.svg';
 import btnRight from '../assets/btn-right.svg';
 
@@ -20,12 +20,7 @@ const MessageDetail = () => {
   const [nextId, setNextId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // [수정] 테마와 이미지가 반대로 매칭되도록 순서를 바꿨습니다.
-  // 혹시 파일명이 헷갈리게 저장되어 있을 수 있어서, 
-  // 화면에 '마구간'이 뜬다면 여기서 bgStableRead와 bgNightSkyRead의 위치를 바꿔주시면 됩니다.
-  // const bgImage = theme === 'sky' ? bgNightSkyRead : bgStableRead;
-  
-  // 만약 위 코드로도 반대로 나온다면, 아래 주석 코드로 바꿔보세요!
+  // 테마 매칭
   const bgImage = theme === 'sky' ? bgStableRead : bgNightSkyRead;
 
   useEffect(() => {
@@ -50,13 +45,8 @@ const MessageDetail = () => {
     fetchMessageData();
   }, [id, theme]);
 
-  const handlePrev = () => {
-    if (prevId) navigate(`/${theme}/detail/${prevId}`);
-  };
-
-  const handleNext = () => {
-    if (nextId) navigate(`/${theme}/detail/${nextId}`);
-  };
+  const handlePrev = () => { if (prevId) navigate(`/${theme}/detail/${prevId}`); };
+  const handleNext = () => { if (nextId) navigate(`/${theme}/detail/${nextId}`); };
 
   if (loading) return <BackgroundLayout image={bgImage} />;
 
@@ -72,8 +62,8 @@ const MessageDetail = () => {
         onClick={() => navigate(`/${theme}`)} 
         style={{
           position: 'absolute',
-          top: '17.41%', 
-          left: '82.82%',
+          top: '15%', 
+          left: '80%',
           width: '36px',
           height: '37px',
           background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 20
@@ -88,8 +78,11 @@ const MessageDetail = () => {
         top: '23.34%',
         left: '50%',
         transform: 'translateX(-50%)',
+        
+        // [수정] 너비는 기존 327px 유지, 높이만 450px로 변경
         width: '327px',
-        height: '397px',
+        height: '450px',
+        
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -106,7 +99,7 @@ const MessageDetail = () => {
           <button
             onClick={handlePrev}
             style={{
-              position: 'absolute', top: '15px', left: '5px',
+              position: 'absolute', top: '15px', left: '20px',
               background: 'none', border: 'none', cursor: 'pointer', zIndex: 30
             }}
           >
@@ -118,7 +111,7 @@ const MessageDetail = () => {
           <button
             onClick={handleNext}
             style={{
-              position: 'absolute', top: '15px', right: '5px',
+              position: 'absolute', top: '15px', right: '20px',
               background: 'none', border: 'none', cursor: 'pointer', zIndex: 30
             }}
           >
@@ -127,8 +120,8 @@ const MessageDetail = () => {
         )}
 
         <div style={{
-          position: 'absolute', top: '80px', left: '35px', 
-          fontFamily: "'Pretendard', sans-serif", fontSize: '18px',
+          position: 'absolute', top: '80px', left: '45px', 
+          fontFamily: "'Pretendard', sans-serif", fontSize: '16.5px',
           display: 'flex', gap: '8px', zIndex: 20
         }}>
           <span style={{ color: '#536B8F', fontWeight: 'bold' }}>From.</span>
@@ -137,11 +130,18 @@ const MessageDetail = () => {
           </span>
         </div>
 
+        {/* 텍스트 내용 영역 */}
         <div style={{
-          position: 'absolute', top: '130px', 
-          width: '256px', height: '240px', 
+          position: 'absolute', top: '116px', 
+          
+          // [수정] 너비 복구 (327px 박스에 맞는 크기)
+          width: '250px', 
+          
+          // [수정] 늘어난 박스 높이만큼 텍스트 영역도 확장 (240px -> 295px)
+          height: '295px', 
+          
           overflowY: 'auto', 
-          fontFamily: "'Pretendard', sans-serif", fontSize: '17px', color: '#333',
+          fontFamily: "'Pretendard', sans-serif", fontSize: '15px', color: '#333',
           lineHeight: '1.6', whiteSpace: 'pre-wrap', zIndex: 20,
         }} className="hide-scrollbar">
           {message?.content}

@@ -36,10 +36,10 @@ const BackgroundLayout = ({ children, className, image }) => {
              -> 아이폰 화면이 작아서(예: 700px) 이미지가 짤려야 하는 상황이 와도,
                 이 박스는 844px 높이를 유지하므로 스크롤바가 생깁니다.
           ========================================================= */
-          aspectRatio: '390 / 844',
+          aspectRatio: '390 / 720',
           
           /* 혹시 aspect-ratio 지원 안하는 구형 브라우저 대비용 계산식 */
-          minHeight: 'calc(100vw * (844 / 390))', 
+          minHeight: 'calc(100vw * (720 / 390))', 
 
           /* 배경 이미지 설정 */
           backgroundImage: image ? `url(${image})` : 'none',

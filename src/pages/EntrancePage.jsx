@@ -46,7 +46,7 @@ const EntrancePage = () => {
       */}
       <div style={{
         position: 'absolute',
-        top: '68.9%', // 582 / 844
+        top: '71%', // 582 / 844
         left: '50%',
         transform: 'translateX(-50%)',
         width: '176px', // 390 - (107 * 2) = 176px (좌우 여백 107px 기준 계산)
@@ -69,7 +69,7 @@ const EntrancePage = () => {
         onChange={handleInputChange}
         style={{
           position: 'absolute',
-          top: '68%',    
+          top: '71%',    
           left: '50%',
           transform: 'translateX(-50%)',
           width: '200px', 
@@ -86,7 +86,7 @@ const EntrancePage = () => {
       */}
       <div style={{
         position: 'absolute',
-        top: '71.4%', // 603 / 844
+        top: '73.7%', // 603 / 844
         left: '50%',
         transform: 'translateX(-50%)',
         display: 'flex',
@@ -131,7 +131,7 @@ const EntrancePage = () => {
         onClick={handleOkClick}
         style={{
           position: 'absolute',
-          top: '82.9%', 
+          top: '86%', 
           left: '50%',
           transform: 'translateX(-50%)',
           width: '36px', 

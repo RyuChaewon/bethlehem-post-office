@@ -78,7 +78,7 @@ export default function OrnamentSelect() {
         onClick={handleClose}
         style={{
           position: 'absolute',
-          top: '9.36%', 
+          top: '10%', 
           left: '50%',
           transform: 'translateX(-50%)',
           width: '36px',
@@ -180,7 +180,7 @@ export default function OrnamentSelect() {
         onClick={handleBack}
         style={{
           position: 'absolute',
-          top: '86%', // MessageForm의 Next 버튼(bottom: 15%)과 높이 맞춤
+          top: '85%', // MessageForm의 Next 버튼(bottom: 15%)과 높이 맞춤
           left: '11%',   // MessageForm(right: 8%)과 좌우 대칭
           width: '48px',
           height: '22px',
