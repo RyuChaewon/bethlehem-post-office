@@ -1,54 +1,51 @@
 import React, { useState, useEffect } from 'react';
 
 const BackgroundLayout = ({ children, className, image }) => {
-  // 초기값을 false로 두되, 이미지가 없을 경우를 대비해 useEffect에서 처리합니다.
+  // 1. 로딩 상태 관리
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // 1. 이미지가 없으면 바로 로딩 끝 처리
+    // 이미지가 없으면 바로 로딩 끝 (setTimeout으로 경고 방지)
     if (!image) {
-      // [수정] setTimeout으로 감싸서 "Synchronous setState" 경고 해결
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 0);
+      setTimeout(() => setIsLoaded(true), 0);
       return;
     }
 
-    // 2. 이미지 미리 다운로드(Preload)
+    // 이미지 미리 다운로드 (Preload)
     const img = new Image();
     img.src = image;
     
-    // 로드 완료 시
-    img.onload = () => {
-      setIsLoaded(true);
-    };
-    
-    // 혹시라도 로드 실패 시 무한 로딩 방지 (화면은 보여줌)
-    img.onerror = () => {
-        setIsLoaded(true);
-    };
-
+    img.onload = () => setIsLoaded(true);
+    img.onerror = () => setIsLoaded(true); // 에러 나도 화면은 보여줌
   }, [image]);
 
   return (
+    // 1. [Outer Wrapper] 기존 레이아웃 설정 완벽 유지
     <div 
       style={{
         width: '100vw',
-        height: '100vh', 
+        
+        /* 기존 설정 유지: 내용물이 길면 늘어나도록 */
+        minHeight: '100vh',
+        height: 'auto',
+        
         backgroundColor: '#1C2333', 
         display: 'flex',
         justifyContent: 'center', 
-        alignItems: 'center',
-        overflow: 'hidden',
-        position: 'fixed', 
-        top: 0,
-        left: 0
+        alignItems: 'flex-start', // 위에서부터 시작
+        
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        position: 'relative' // 로딩 텍스트 위치 잡기 위해 추가
       }}
     >
-      {/* [로딩 화면] */}
+      {/* 2. [로딩 텍스트] 이미지가 뜨기 전까지 중앙에 표시 */}
       {!isLoaded && (
         <div style={{
           position: 'absolute',
+          top: '50vh', // 화면 중앙쯤
+          left: '50%',
+          transform: 'translateX(-50%)',
           color: 'rgba(255,255,255,0.5)',
           fontFamily: 'sans-serif',
           fontSize: '14px',
@@ -58,23 +55,21 @@ const BackgroundLayout = ({ children, className, image }) => {
         </div>
       )}
 
-      {/* 메인 컨테이너 */}
+      {/* 3. [Inner Container] 기존 설정 유지 + 애니메이션 추가 */}
       <div
         className={className}
         style={{
           width: '100%',
-          maxWidth: '390px', 
+          maxWidth: '430px', 
           
-          /* 390 x 720 비율 고정 */
+          /* 기존 비율 설정 유지 */
           aspectRatio: '390 / 720',
-          maxHeight: '720px',
-          height: '100%', 
+          minHeight: 'calc(100vw * (720 / 390))', 
 
-          /* 배경 이미지 설정 */
           backgroundImage: image ? `url(${image})` : 'none',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%', 
-          backgroundPosition: 'center center',
+          backgroundPosition: 'top center',
           
           display: 'flex',
           flexDirection: 'column',
@@ -84,9 +79,9 @@ const BackgroundLayout = ({ children, className, image }) => {
           boxShadow: '0 0 20px rgba(0,0,0,0.5)',
           overflow: 'hidden',
 
-          /* 로딩 완료 시 부드럽게 등장 */
+          /* [추가된 부분] 로딩 완료 시 투명도 0 -> 1 부드럽게 전환 */
           opacity: isLoaded ? 1 : 0,
-          transition: 'opacity 0.5s ease-in-out' 
+          transition: 'opacity 0.5s ease-in-out'
         }}
       >
         {children}
