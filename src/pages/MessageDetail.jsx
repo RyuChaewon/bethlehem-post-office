@@ -141,7 +141,7 @@ const MessageDetail = () => {
           height: '295px', 
           
           overflowY: 'auto', 
-          fontFamily: "'Pretendard', sans-serif", fontSize: '15px', color: '#333',
+          fontFamily: "'Pretendard', sans-serif", fontSize: '14px', color: '#333',
           lineHeight: '1.6', whiteSpace: 'pre-wrap', zIndex: 20,
         }} className="hide-scrollbar">
           {message?.content}

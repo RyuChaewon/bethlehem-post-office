@@ -142,7 +142,7 @@ export default function MessageForm() {
             
             padding: '17px', 
             
-            fontSize: '15px',
+            fontSize: '14px',
             fontFamily: "'Pretendard', sans-serif",
             color: 'white',
             lineHeight: '1.5',
