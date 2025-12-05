@@ -29,7 +29,7 @@ const LandingPage = () => {
           position: 'absolute',
           
           // 세로 위치: 677 / 844 ≈ 80.2% 지점에 배치
-          top: '80.2%', 
+          top: '77%', 
           
           // 가로 위치: 디자인상 가운데 정렬이므로 50%로 이동 후 본인 크기의 절반만큼 왼쪽으로 이동
           left: '50%',
@@ -37,7 +37,7 @@ const LandingPage = () => {
           
           // 크기 고정 (요청하신 사이즈)
           width: '89px',
-          height: '35px',
+          height: '60px',
           
           // --- 버튼 기본 스타일 제거 ---
           background: 'none',

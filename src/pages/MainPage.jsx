@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import BackgroundLayout from '../components/BackgroundLayout';
 import bgMain from '../assets/bg-main.svg';       // 메인 배경
 import btnBack from '../assets/btn-back.svg';     // 뒤로가기 버튼
-import btnNightSky from '../assets/btn-nightsky.svg'; // 밤하늘 버튼
-import btnStable from '../assets/btn-stable.svg';     // 마구간 버튼
+import btnNightSky from '../assets/btn-nightsky.png'; // 밤하늘 버튼
+import btnStable from '../assets/btn-stable.png';     // 마구간 버튼
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const MainPage = () => {
         style={{
           position: 'absolute',
           top: '11.61%',
-          left: '53%',
+          left: '57%',
           width: '120px',
           height: '185px',
           background: 'none',
