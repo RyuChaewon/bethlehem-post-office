@@ -111,8 +111,8 @@ const MessageListLayout = ({ theme, bgImage, writeBtnImage, icons, writePath }) 
           
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)', // 3열
-          gap: '5px', 
-          padding: '10px 0px', 
+          gap: '10px', 
+          padding: '5px 0px', 
           alignContent: 'start', // 아이템들이 위에서부터 차곡차곡 쌓이게
         }}
         className="hide-scrollbar"
@@ -141,7 +141,7 @@ const MessageListLayout = ({ theme, bgImage, writeBtnImage, icons, writePath }) 
             <img 
               src={icons[msg.iconIndex] || icons[0]} 
               alt="icon" 
-              style={{ width: '90px', height: '90px', objectFit: 'contain' }} 
+              style={{ width: '75px', height: '75px', objectFit: 'contain' }} 
             />
             <div style={fontStyle}>
               {msg.nickname || '익명'}
