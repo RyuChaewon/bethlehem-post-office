@@ -55,21 +55,23 @@ const BackgroundLayout = ({ children, className, image }) => {
         </div>
       )}
 
-      {/* 3. [Inner Container] 기존 설정 유지 + 애니메이션 추가 */}
+      {/* 2. [Inner Container] 실제 핸드폰 화면 비율 고정 */}
       <div
         className={className}
         style={{
           width: '100%',
-          maxWidth: '430px', 
           
-          /* 기존 비율 설정 유지 */
-          aspectRatio: '390 / 720',
-          minHeight: 'calc(100vw * (720 / 390))', 
+          /* [핵심 1] 너비를 390px 근처로 제한 (너무 커지지 않게) */
+          maxWidth: '390px', 
+          
+          /* [핵심 2] 비율을 390:720으로 '강제 고정' */
+          /* 화면이 커지든 작아지든 무조건 이 비율을 유지합니다 */
+          aspectRatio: '390 / 720', 
 
+          /* [핵심 3] 배경 이미지를 박스 크기에 100% 딱 맞춤 */
           backgroundImage: image ? `url(${image})` : 'none',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%', 
-          backgroundPosition: 'top center',
           
           display: 'flex',
           flexDirection: 'column',
@@ -77,9 +79,8 @@ const BackgroundLayout = ({ children, className, image }) => {
           position: 'relative',
           
           boxShadow: '0 0 20px rgba(0,0,0,0.5)',
-          overflow: 'hidden',
+          overflow: 'hidden', /* 박스 밖으로 나가는 건 자름 */
 
-          /* [추가된 부분] 로딩 완료 시 투명도 0 -> 1 부드럽게 전환 */
           opacity: isLoaded ? 1 : 0,
           transition: 'opacity 0.5s ease-in-out'
         }}
