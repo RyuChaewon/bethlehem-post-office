@@ -25,7 +25,7 @@ export default function OutroPage() {
       <div 
         style={{
           position: 'absolute',
-          top: '550px', // y600 아래 위치
+          top: '76%', // y600 아래 위치
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
