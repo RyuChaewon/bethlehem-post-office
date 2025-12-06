@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../styles/main.css';
 
 const BackgroundLayout = ({ children, className, image }) => {
   // 1. 로딩 상태 관리
@@ -62,7 +63,7 @@ const BackgroundLayout = ({ children, className, image }) => {
           width: '100%',
           
           /* [핵심 1] 너비를 390px 근처로 제한 (너무 커지지 않게) */
-          maxWidth: '390px', 
+          maxWidth: '420px', 
           
           /* [핵심 2] 비율을 390:720으로 '강제 고정' */
           /* 화면이 커지든 작아지든 무조건 이 비율을 유지합니다 */

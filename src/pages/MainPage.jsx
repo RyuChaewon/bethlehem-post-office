@@ -23,7 +23,7 @@ const MainPage = () => {
         style={{
           position: 'absolute',
           top: '5.45%', 
-          left: '11.02%',
+          left: '9%',
           width: '48px',
           height: '22px',
           background: 'none',

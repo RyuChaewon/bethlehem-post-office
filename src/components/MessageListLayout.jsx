@@ -84,7 +84,7 @@ const MessageListLayout = ({ theme, bgImage, writeBtnImage, icons, writePath }) 
         style={{
           position: 'absolute',
           top: '5.68%', 
-          left: '11.02%', 
+          left: '9%', 
           width: '48px',
           height: '22px',
           background: 'none', border: 'none', padding: 0, cursor: 'pointer', zIndex: 10
