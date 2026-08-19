@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// 컴포넌트 & 이미지
+// 컴포넌트와 이미지 에셋
 import BackgroundLayout from '../components/BackgroundLayout';
-import bgMain from '../assets/bg-main.svg';       // 메인 배경
-import btnBack from '../assets/btn-back.svg';     // 뒤로가기 버튼
-import btnNightSky from '../assets/btn-nightsky.png'; // 밤하늘 버튼
-import btnStable from '../assets/btn-stable.png';     // 마구간 버튼
+import bgMain from '../assets/bg-main.svg';
+import btnBack from '../assets/btn-back.svg';
+import btnNightSky from '../assets/btn-nightsky.png';
+import btnStable from '../assets/btn-stable.png';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -14,12 +14,9 @@ const MainPage = () => {
   return (
     <BackgroundLayout image={bgMain}>
       
-      {/* 1. 뒤로가기 버튼 (Back) 
-          위치: 43, 46 -> left: 11%, top: 5.45%
-          크기: 48 x 22
-      */}
+      {/* 뒤로가기 버튼 */}
       <button
-        onClick={() => navigate('/outro')} // 이전 페이지로 이동
+        onClick={() => navigate('/outro')}
         style={{
           position: 'absolute',
           top: '5.45%', 
@@ -40,12 +37,9 @@ const MainPage = () => {
         />
       </button>
 
-      {/* 2. 밤하늘 바로가기 버튼 (Night Sky)
-          위치: 194, 98 -> left: 49.7%, top: 11.6%
-          크기: 141 x 205
-      */}
+      {/* 밤하늘 메시지 목록으로 이동 */}
       <button
-        onClick={() => navigate('/sky')} // 라우터 경로에 맞게 수정 필요 (예: /sky)
+        onClick={() => navigate('/sky')}
         style={{
           position: 'absolute',
           top: '11.61%',
@@ -66,12 +60,9 @@ const MainPage = () => {
         />
       </button>
 
-      {/* 3. 마구간 바로가기 버튼 (Stable)
-          위치: 53, 422 -> left: 13.6%, top: 50%
-          크기: 227 x 278
-      */}
+      {/* 마구간 메시지 목록으로 이동 */}
       <button
-        onClick={() => navigate('/stable')} // 라우터 경로에 맞게 수정 필요 (예: /stable)
+        onClick={() => navigate('/stable')}
         style={{
           position: 'absolute',
           top: '50%',
