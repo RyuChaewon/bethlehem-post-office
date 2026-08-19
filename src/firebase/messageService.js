@@ -17,7 +17,7 @@ import { db } from './config';
 
 const COLLECTION_NAME = "messages";
 
-// 1. 메시지 저장
+// 메시지를 Firestore에 저장하고 생성된 문서 ID를 반환합니다.
 export const saveMessage = async (messageData) => {
   try {
     const docRef = await addDoc(collection(db, COLLECTION_NAME), {
@@ -31,7 +31,7 @@ export const saveMessage = async (messageData) => {
   }
 };
 
-// 2. 메시지 불러오기 (페이지네이션 적용)
+// 테마별 메시지를 최신순으로 페이지네이션해 불러옵니다.
 export const getMessages = async (theme, lastDoc = null) => {
   try {
     let q;
@@ -67,7 +67,7 @@ export const getMessages = async (theme, lastDoc = null) => {
   }
 };
 
-// 3. 메시지 단건 조회
+// ID로 메시지 한 건을 조회합니다.
 export const getMessageById = async (id) => {
   try {
     const docRef = doc(db, COLLECTION_NAME, id);
@@ -84,7 +84,7 @@ export const getMessageById = async (id) => {
   }
 };
 
-// 4. 방문자 수 카운트 (선택 사항)
+// 방문자 수를 1 증가시키고 최신 카운트를 반환합니다.
 export const handleVisitorCount = async () => {
   const docRef = doc(db, "stats", "visitor_count");
   try {
@@ -97,56 +97,54 @@ export const handleVisitorCount = async () => {
       return 1;
     }
   } catch (error) {
-    // [수정됨] error 변수를 사용하도록 console.error 추가
     console.error("Error handling visitor count:", error); 
     return 0;
   }
 };
 
+// 방문자 수를 증가시키지 않고 현재 값만 조회합니다.
 export const getVisitorCountOnly = async () => {
   try {
     const docRef = doc(db, "stats", "visitor_count");
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? docSnap.data().count : 0;
   } catch (error) {
-    // [수정됨] error 변수를 사용하도록 console.error 추가
     console.error("Error getting visitor count:", error);
     return 0;
   }
 };
 
-// [추가] 이전/다음 메시지 ID 찾기
-// direction: 'prev' (최신글 방향) 또는 'next' (과거글 방향)
+// 상세 화면에서 현재 메시지 기준 이전/다음 메시지 ID를 찾습니다.
 export const getAdjacentMessageId = async (theme, currentCreatedAt, direction) => {
   try {
     let q;
     const colRef = collection(db, COLLECTION_NAME);
 
     if (direction === 'prev') {
-      // 이전 글 (더 최신 글 찾기): 현재 시간보다 크고, 오름차순 정렬 중 첫 번째
+      // 현재 메시지보다 최신인 메시지 중 가장 가까운 항목을 찾습니다.
       q = query(
         colRef,
         where("theme", "==", theme),
         where("createdAt", ">", currentCreatedAt),
-        orderBy("createdAt", "asc"), // 시간순으로 가장 가까운 미래
+        orderBy("createdAt", "asc"),
         limit(1)
       );
     } else {
-      // 다음 글 (더 옛날 글 찾기): 현재 시간보다 작고, 내림차순 정렬 중 첫 번째
+      // 현재 메시지보다 오래된 메시지 중 가장 가까운 항목을 찾습니다.
       q = query(
         colRef,
         where("theme", "==", theme),
         where("createdAt", "<", currentCreatedAt),
-        orderBy("createdAt", "desc"), // 시간순으로 가장 가까운 과거
+        orderBy("createdAt", "desc"),
         limit(1)
       );
     }
 
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      return snapshot.docs[0].id; // 찾은 메시지 ID 반환
+      return snapshot.docs[0].id;
     }
-    return null; // 없으면 null
+    return null;
   } catch (error) {
     console.error("Error finding adjacent message:", error);
     return null;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom'; // useLocation 추가
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import BackgroundLayout from '../components/BackgroundLayout';
 
 // 이미지 에셋
@@ -12,9 +12,9 @@ import btnNext from '../assets/btn-next.svg';
 export default function MessageForm() {
   const navigate = useNavigate();
   const { theme } = useParams();
-  const location = useLocation(); // location 객체 가져오기
+  const location = useLocation();
 
-  // 이전 페이지(OrnamentSelect)에서 돌아왔을 때 넘겨받은 데이터가 있다면 초기값으로 설정
+  // 오너먼트 선택 화면에서 돌아온 경우 기존 입력값을 복원합니다.
   const [nickname, setNickname] = useState(location.state?.nickname || '');
   const [content, setContent] = useState(location.state?.content || '');
 
@@ -47,7 +47,7 @@ export default function MessageForm() {
         `}
       </style>
 
-      {/* --- 1. X 닫기 버튼 --- */}
+      {/* 닫기 버튼 */}
       <button
         onClick={() => navigate(-1)}
         style={{
@@ -63,7 +63,7 @@ export default function MessageForm() {
         <img src={btnWriteX} alt="Close" style={{ width: '100%', height: '100%' }} />
       </button>
 
-      {/* --- 2. 닉네임 입력 영역 --- */}
+      {/* 닉네임 입력 영역 */}
       <div style={{
         position: 'absolute',
         top: '18%',
@@ -108,7 +108,7 @@ export default function MessageForm() {
         />
       </div>
 
-      {/* --- 3. 내용 입력 영역 --- */}
+      {/* 메시지 입력 영역 */}
       <div style={{
         position: 'absolute',
         top: '26%',
@@ -152,7 +152,7 @@ export default function MessageForm() {
           }}
         />
         
-        {/* 글자수 카운트 */}
+        {/* 글자 수 카운트 */}
         <div style={{
           position: 'absolute',
           bottom: '14px',
@@ -166,7 +166,7 @@ export default function MessageForm() {
         </div>
       </div>
 
-      {/* --- 4. Next 버튼 --- */}
+      {/* 다음 단계 버튼 */}
       <button
         onClick={handleNext}
         style={{
