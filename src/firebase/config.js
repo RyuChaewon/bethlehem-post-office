@@ -15,4 +15,4 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-export const db = getFirestore(app); // db 객체 export 확인
+export const db = getFirestore(app);
